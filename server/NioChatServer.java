@@ -13,6 +13,7 @@ public class NioChatServer implements Runnable {
     
     // Maps SocketChannel to Username
     private final Map<SocketChannel, String> clients = new HashMap<>();
+    private final Set<String> bannedUsers = new HashSet<>();
 
     public Collection<String> getOnlineUsers() {
         return new ArrayList<>(clients.values());
@@ -84,6 +85,11 @@ public class NioChatServer implements Runnable {
     private void processMessage(SocketChannel clientChannel, String msg) throws IOException {
         if (msg.startsWith("JOIN ")) {
             String username = msg.substring(5).trim();
+            if (bannedUsers.contains(username)) {
+                sendMsg(clientChannel, "SYS: You are BANNED from this server.");
+                clientChannel.close();
+                return;
+            }
             clients.put(clientChannel, username);
             broadcast("SYS: " + username + " has joined the chat.", null);
             sendOnlineUsers();
@@ -94,11 +100,23 @@ public class NioChatServer implements Runnable {
 
         if (msg.startsWith("/kick ")) { // Basic Admin command handled here
             if (!sender.equalsIgnoreCase("admin")) {
-                sendMsg(clientChannel, "SYS: Only admin can kick users.");
+                sendMsg(clientChannel, "SYS: Only admin can use this command.");
                 return;
             }
             String target = msg.substring(6).trim();
             kickUser(target);
+            return;
+        }
+
+        if (msg.startsWith("/ban ")) { // Ban Admin command
+            if (!sender.equalsIgnoreCase("admin")) {
+                sendMsg(clientChannel, "SYS: Only admin can use this command.");
+                return;
+            }
+            String target = msg.substring(5).trim();
+            bannedUsers.add(target);
+            kickUser(target); // Kick them out immediately
+            broadcast("SYS: " + target + " has been permanently BANNED by admin.", null);
             return;
         }
 
