@@ -7,6 +7,14 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.*;
 import java.net.InetSocketAddress;
 
+/**
+ * 基于原生 HTTP 的文件共享服务器 (HTTP File Server)
+ * 核心技术：com.sun.net.httpserver.HttpServer
+ * 功能：
+ * 1. 监听特定的 HTTP 端口（28000），提供跨平台的文件传输支持。
+ * 2. 提供 `/upload` 接口接收客户端上传的文件并存储至服务端本地的 uploads 文件夹。
+ * 3. 提供 `/download` 接口允许客户端通过标准 HTTP GET 请求下载文件。
+ */
 public class HttpFileServer {
     private final int port;
     private final String uploadDir = "uploads/";

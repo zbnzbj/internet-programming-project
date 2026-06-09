@@ -6,6 +6,12 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 服务端活动日志记录器 (Server Logger)
+ * 功能：
+ * 将服务端产生的所有关键事件（如：组件启动、用户连接/断开、管理员封禁操作）
+ * 以带有标准时间戳的格式写入本地的 ServerLog.txt 文件中，便于审计与调试。
+ */
 public class ServerLog {
     private static final String LOG_FILE = "ServerLog.txt";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

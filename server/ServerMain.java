@@ -2,6 +2,15 @@ package server;
 
 import java.util.Scanner;
 
+/**
+ * 服务端启动入口类 (Main Entry Point)
+ * 该类负责统筹并启动所有的服务端组件，包括：
+ * 1. NioChatServer (基于 NIO 的高性能消息分发服务器)
+ * 2. AuthServer (基于 SSL/TLS 的安全认证注册/登录服务器)
+ * 3. UdpBroadcaster (UDP 服务端自动发现广播)
+ * 4. HttpFileServer (基于 HTTP 的大文件上传/下载服务器)
+ * 5. WebAdminServer (可视化的网页端管理员控制台)
+ */
 public class ServerMain {
     public static final int AUTH_PORT = 28443;
     public static final int CHAT_PORT = 28080;

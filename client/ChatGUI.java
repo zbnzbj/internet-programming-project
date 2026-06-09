@@ -6,6 +6,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
+/**
+ * 客户端图形用户界面 (Client GUI)
+ * 核心技术：Java Swing 框架
+ * 功能：
+ * 1. 提供登录与注册的可视化弹窗，支持高分附加项（输入 SOCKS 代理和主机名 DNS 解析）。
+ * 2. 渲染主聊天界面，包含全局消息展示区、在线用户列表、私聊/群聊输入框。
+ * 3. 集成基于 HTTP 的文件上传和下载交互按钮。
+ */
 public class ChatGUI {
     private final NetworkClient client;
     

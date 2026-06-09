@@ -6,6 +6,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Properties;
 
+/**
+ * 本地用户数据库管理类 (Database Manager)
+ * 核心技术：Properties 键值对存储与 SHA-256 加密算法。
+ * 功能：
+ * 1. 提供用户注册时的密码哈希加密（SHA-256 + 随机 Salt）。
+ * 2. 提供用户登录时的密码比对校验。
+ * 3. 所有的用户凭证会被持久化保存到本地文件 users_db.properties 中。
+ */
 public class Database {
     private static final String DB_FILE = "users_db.properties";
     private Properties users;

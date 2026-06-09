@@ -5,6 +5,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * UDP 广播服务器自动发现组件 (UDP Server Discovery)
+ * 核心技术：DatagramSocket / UDP Broadcast
+ * 功能：
+ * 周期性（如每2秒）向局域网内的 28888 端口发送包含服务端 IP 信息的 UDP 广播包。
+ * 这使得客户端无需手动输入 IP，即可在局域网内自动寻找并连接到服务器。
+ */
 public class UdpBroadcaster implements Runnable {
     private final int broadcastPort;
     private final String message;

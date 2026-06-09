@@ -7,6 +7,12 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 安全认证服务器 (Authentication Server)
+ * 核心技术：使用 SSLServerSocket 提供端到端加密 (End-to-End Encryption)。
+ * 功能：处理客户端的注册 (REGISTER) 和登录 (LOGIN) 请求，确保密码等敏感信息
+ * 在网络传输过程中不会被中间人抓包窃听。
+ */
 public class AuthServer implements Runnable {
     private final int port;
     private final Database db;

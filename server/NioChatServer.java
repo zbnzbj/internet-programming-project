@@ -6,6 +6,14 @@ import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.*;
 
+/**
+ * 高并发聊天分发核心服务器 (NIO Chat Server)
+ * 核心技术：Java NIO (Non-blocking I/O)，包括 Selector 和 SocketChannel。
+ * 功能：
+ * 1. 使用单线程 Selector 轮询事件，极大地提高了并发处理能力（区别于传统 BIO 的一线程一连接）。
+ * 2. 负责处理群聊广播、私聊精准投递。
+ * 3. 处理管理员特权指令（/kick 踢人、/ban 封禁）。
+ */
 public class NioChatServer implements Runnable {
     private final int port;
     private Selector selector;

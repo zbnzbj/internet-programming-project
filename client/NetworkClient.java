@@ -5,6 +5,15 @@ import java.io.*;
 import java.net.*;
 import java.security.cert.X509Certificate;
 
+/**
+ * 客户端核心网络通信组件 (Network Client)
+ * 核心职责：
+ * 1. 自动发现：监听 28888 端口的 UDP 广播，实现局域网内服务器 IP 的自动发现。
+ * 2. 安全认证：通过 SSLSocket 与服务端的 28443 端口建立强加密连接，进行登录注册。
+ * 3. 聊天通信：通过标准的 TCP Socket 接入服务端的 NIO 聊天主干。
+ * 4. 高级网络：提供 SOCKS 代理流量转发支持，并使用 InetAddress 处理双栈 DNS 解析。
+ * 5. 文件传输：使用 HttpURLConnection 发送 POST 上传和 GET 下载请求。
+ */
 public class NetworkClient {
     private String serverIp = "127.0.0.1";
     private final int authPort = 28443;
