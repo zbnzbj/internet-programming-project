@@ -6,7 +6,15 @@ import java.net.*;
 import java.security.cert.X509Certificate;
 
 /**
- * 客户端核心网络通信组件 (Network Client)
+ * [EN] Core Network Communication Component (Network Client)
+ * Core Responsibilities:
+ * 1. Auto-discovery: Listens to port 28888 for UDP broadcasts to automatically find the server IP.
+ * 2. Secure Auth: Establishes an SSLSocket connection to port 28443 for encrypted login/registration.
+ * 3. Chat Comm: Uses standard TCP Sockets to connect to the server's NIO chat backbone.
+ * 4. Advanced Net: Provides SOCKS proxy support and handles dual-stack DNS resolution.
+ * 5. File Transfer: Uses HttpURLConnection for POST uploads and GET downloads.
+ *
+ * [ZH] 客户端核心网络通信组件
  * 核心职责：
  * 1. 自动发现：监听 28888 端口的 UDP 广播，实现局域网内服务器 IP 的自动发现。
  * 2. 安全认证：通过 SSLSocket 与服务端的 28443 端口建立强加密连接，进行登录注册。
@@ -31,7 +39,8 @@ public class NetworkClient {
     private ChatGUI gui;
 
     public NetworkClient() {
-        // 在后台启动一个独立线程，专门用于监听 UDP 广播以自动发现服务端 IP
+        // [EN] Start a background thread specifically to listen for UDP discovery broadcasts
+        // [ZH] 在后台启动一个独立线程，专门用于监听 UDP 广播以自动发现服务端 IP
         new Thread(this::listenForUdpDiscovery).start();
     }
 
@@ -43,6 +52,8 @@ public class NetworkClient {
         this.serverIp = ip;
     }
 
+    // [EN] Configure SOCKS proxy settings dynamically
+    // [ZH] 动态配置 SOCKS 代理设置
     public void setProxy(String ip, int port) {
         this.proxyIp = ip;
         this.proxyPort = port;
@@ -54,6 +65,8 @@ public class NetworkClient {
         }
     }
     
+    // [EN] Resolves hostname to both IPv4 and IPv6 addresses to verify DNS capabilities
+    // [ZH] 将主机名解析为 IPv4 和 IPv6 地址，以验证双栈 DNS 解析能力
     private void resolveHostnameAndIPv6() {
         try {
             InetAddress[] addresses = InetAddress.getAllByName(serverIp);
@@ -70,7 +83,8 @@ public class NetworkClient {
         }
     }
 
-    // 监听 UDP 广播以自动发现服务端 IP。如果检测到，将自动把 serverIp 替换为发现的 IP
+    // [EN] Listens for UDP broadcasts to automatically find the server IP.
+    // [ZH] 监听 UDP 广播以自动发现服务端 IP。如果检测到，将自动把 serverIp 替换为发现的 IP
     private void listenForUdpDiscovery() {
         try (DatagramSocket socket = new DatagramSocket(28888)) {
             byte[] buf = new byte[256];
@@ -93,7 +107,8 @@ public class NetworkClient {
         }
     }
 
-    // 绕过 SSL 证书校验（因为我们使用的是自签名的临时证书，直接信任所有证书）
+    // [EN] Bypass SSL validation since we are using a self-signed temporary certificate
+    // [ZH] 绕过 SSL 证书校验（因为我们使用的是自签名的临时证书，直接信任所有证书）
     private SSLSocketFactory getTrustAllSocketFactory() throws Exception {
         TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
@@ -120,11 +135,14 @@ public class NetworkClient {
         return success;
     }
 
+    // [EN] Send registration or login request securely over SSL/TLS
+    // [ZH] 通过 SSL/TLS 安全通道发送注册或登录请求
     private boolean sendAuthRequest(String cmd, String user, String pass) {
         resolveHostnameAndIPv6();
         try {
             SSLSocketFactory factory = getTrustAllSocketFactory();
             Socket underlyingSocket;
+            // [EN] Support SOCKS Proxy if configured / [ZH] 若已配置则支持 SOCKS 代理
             if (proxy != null) {
                 underlyingSocket = new Socket(proxy);
                 underlyingSocket.connect(new InetSocketAddress(serverIp, authPort));
@@ -148,6 +166,8 @@ public class NetworkClient {
         }
     }
 
+    // [EN] Connect to the main NIO Chat Server after successful authentication
+    // [ZH] 在成功认证后，连接至主要的 NIO 聊天服务器
     private void connectToChatServer() {
         try {
             if (proxy != null) {
@@ -159,24 +179,30 @@ public class NetworkClient {
             chatIn = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
             chatOut = new PrintWriter(chatSocket.getOutputStream(), true);
             
-            // 向服务端发送 JOIN 协议消息，宣告当前用户名加入聊天室
+            // [EN] Send JOIN protocol message to declare presence
+            // [ZH] 向服务端发送 JOIN 协议消息，宣告当前用户名加入聊天室
             chatOut.println("JOIN " + username);
             
-            // 启动一个专门的线程持续监听服务端发来的聊天消息
+            // [EN] Start a dedicated thread to continuously listen for incoming messages
+            // [ZH] 启动一个专门的线程持续监听服务端发来的聊天消息
             new Thread(this::listenForMessages).start();
         } catch (IOException e) {
             gui.appendSystemMessage("Failed to connect to chat server.");
         }
     }
 
+    // [EN] Thread method to read incoming data from the server
+    // [ZH] 线程主方法，用于从服务端读取传入的数据流
     private void listenForMessages() {
         try {
             String msg;
             while ((msg = chatIn.readLine()) != null) {
                 if (msg.startsWith("ONLINE_USERS ")) {
+                    // [EN] Update GUI user list / [ZH] 更新界面的用户列表
                     String[] users = msg.substring(13).split(",");
                     gui.updateOnlineUsers(users);
                 } else {
+                    // [EN] Update GUI chat area / [ZH] 更新界面的聊天记录
                     gui.appendMessage(msg);
                 }
             }
@@ -185,6 +211,7 @@ public class NetworkClient {
         }
     }
 
+    // [EN] Send standard text message / [ZH] 发送标准文本消息
     public void sendMessage(String msg) {
         if (chatOut != null) {
             chatOut.println(msg);
@@ -195,6 +222,8 @@ public class NetworkClient {
         return username;
     }
     
+    // [EN] Upload a file using HTTP POST request
+    // [ZH] 使用 HTTP POST 请求上传文件
     public void uploadFile(File file) {
         new Thread(() -> {
             try {
@@ -231,6 +260,8 @@ public class NetworkClient {
         }).start();
     }
     
+    // [EN] Download a file using HTTP GET request
+    // [ZH] 使用 HTTP GET 请求下载文件
     public void downloadFile(String filename, File destDir) {
         new Thread(() -> {
             try {
