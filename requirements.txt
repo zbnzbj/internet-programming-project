@@ -1,0 +1,176 @@
+互联网编程大作业要求
+Project Title: Design and Implementation of a Networked Application Using Java Socket Programming
+Objective
+The goal of this project is to design and implement a networked application that demonstrates proficiency in Java Socket Programming, covering key concepts such as TCP/UDP communication, HTTP protocols, multithreading, non-blocking I/O, and secure sockets.
+Project Options： Choose one of the following topics:
+Topic 1: Multi-Threaded Client-Server Chat Application with Encryption
+Design and implement a secure, multi-threaded chat application that supports:
+	•	TCP-based client-server communication (using Socket and ServerSocket).
+	•	Multi-threaded server to handle multiple clients simultaneously.
+	•	User authentication (login/registration) with password hashing (e.g., SHA-256 + salt).
+	•	End-to-end encryption using SSL/TLS (SSLSocket and SSLServerSocket).
+	•	UDP-based broadcast messaging for server announcements.
+	•	HTTP-based file sharing ( using HttpURLConnection).
+	•	Non-blocking I/O (NIO) for scalable client handling.
+	•	Logging server activities (e.g., user connections, messages).
+Functional Requirements:
+	•	Client-side:
+	•	GUI (Swing/JavaFX) for sending/receiving messages.
+	•	Ability to send private and group messages.
+	•	File transfer support (via HTTP or direct socket transfer).
+	•	Display online users.
+	•	Server-side:
+	•	Handles multiple clients using threads or thread pools.
+	•	Maintains user sessions (optional: HttpSession-like tracking).
+	•	Logs all activities (e.g., ServerLog.txt).
+	•	Supports admin commands (e.g., /kick, /ban).
+Optional Extensions for A and A+:
+	•	Proxy support (allow clients to connect via a proxy).
+	•	IPv6 compatibility (support both IPv4 and IPv6).
+	•	DNS resolution (resolve hostnames using InetAddress).
+	•	Web-based admin panel ( using a simple HTTP server).
+
+Topic 2: Simple HTTP Web Server with Dynamic Content Handling
+Design and implement a multi-threaded HTTP web server that can:
+	•	Handle HTTP GET/POST requests (similar to Apache/Nginx but simplified).
+	•	Serve static files (HTML, CSS, JS, images).
+	•	Process dynamic requests (e.g., /login, /search).
+	•	Support cookies and sessions (track logged-in users).
+	•	Use thread pools for efficient request handling.
+	•	Log requests (e.g., access logs in access.log).
+	•	Support HTTPS (optional: using SSLServerSocket).
+Functional Requirements:
+	•	Basic HTTP Server:
+	•	Parses HTTP headers and methods (GET, POST).
+	•	Supports MIME types (e.g., text/html, image/png).
+	•	Implements 404 Not Found and 500 Server Error responses.
+	•	Dynamic Content Handling:
+	•	Simulates a login system (stores session data).
+	•	Processes form submissions (e.g., search queries).
+	•	Admin Features:
+	•	Displays server stats (active connections, request count).
+	•	Allows shutting down the server via an admin command.
+Optional Extensions for A and A+:
+	•	Non-blocking I/O (NIO) for better scalability.
+	•	Reverse proxy (forward requests to another server).
+	•	Load balancing (distribute requests across multiple backend servers).
+	•	Support for IPv6 (Inet6Address).
+
+Topic 3: Networked File Transfer Tool
+Core Features :
+	•	Dual-Mode Transfer
+	•	TCP for reliable file transfers
+	•	UDP for fast metadata exchange (e.g., file list requests)
+	•	Basic Security
+	•	Password authentication (MD5/SHA-1)
+	•	File checksum verification (CRC32)
+	•	Threaded Operations
+	•	Progress bars for active transfers
+	•	Background queue for multiple files
+Optional Enhancements for A and A+:
+	•	Resume interrupted transfers
+	•	Directory synchronization
+	•	Simple GUI (JavaFX/Swing)
+
+Topic 4: Intelligent Web Proxy Server with Caching & Analytics
+Core Technical Requirements:
+	•	Dual-Stack Network Core
+	•	Implement both IPv4 and IPv6 support using Inet4Address/Inet6Address
+	•	DNS resolution with timeout handling (InetAddress.getByName())
+	•	Network interface binding (NetworkInterface.getByInetAddress())
+	•	Advanced Protocol Handling
+	•	HTTP/HTTPS proxy (CONNECT method)
+	•	URL rewriting and redirect handling (URI/URL classes)
+	•	MIME type filtering (block unsafe content-types)
+	•	Performance Optimization
+	•	NIO-based connection pooling (Selector, SocketChannel)
+	•	LRU caching for frequent requests (LinkedHashMap synchronization)
+	•	Thread pool with work stealing (ForkJoinPool)
+	•	Security & Monitoring
+	•	SSL termination with custom trust stores
+	•	Request logging with IP geolocation
+	•	DOS protection (rate limiting per IP)
+Topic 5: Real-Time Weather Data Fetcher (1 Member Team Max Grade: B or B+)
+Core Features (API Integration Focus):
+1. Multi-Source Data Aggregation (HTTP & Socket Programming)
+	•	HTTP GET Requests to fetch weather data from at least two public APIs (e.g., OpenWeatherMap, WeatherAPI, AccuWeather).
+	•	JSON Parsing & Local Caching: Store fetched data in JSON files for offline access.
+	•	Socket-Based Fallback Mechanism:
+	•	If an API fails, switch to a secondary API using socket-based communication.
+	•	Implement a custom TCP socket server to simulate a backup weather data source.
+2. Concurrent Processing (Threads & Sockets)
+	•	Thread Pool (ExecutorService) for parallel API calls to improve performance.
+	•	Scheduled Updates (TimerTask / ScheduledExecutorService) to fetch data at fixed intervals (e.g., every 30 minutes).
+	•	Non-Blocking Socket I/O (Optional) using java.nio for handling multiple connections efficiently.
+3. Network Diagnostics (Socket & ICMP Ping)
+	•	Ping Latency Measurement:
+	•	Use InetAddress.isReachable() to check API server availability.
+	•	Measure response time for each API call.
+	•	Fallback Mechanism:
+	•	If primary API is unreachable, automatically switch to a secondary API.
+	•	IPv6 Compatibility Check:
+	•	Verify if the system supports IPv6 (NetworkInterface class).
+	•	Test API connectivity over IPv6 if available.
+4. GUI Interface (Swing/JavaFX)
+	•	Display real-time weather data (temperature, humidity, wind speed, etc.).
+	•	Show network diagnostics (ping latency, API status).
+	•	Allow manual refresh and API selection.
+5. SMS Alerts (External API Integration)
+	•	Integrate with an SMS gateway (e.g., Twilio, Nexmo) to send weather alerts.
+	•	Trigger alerts for extreme weather conditions (e.g., high temperature, storms).
+6. Historical Data Analysis
+	•	Store past weather data in a structured format (JSON/CSV).
+	•	Generate simple trend graphs (using JFreeChart or similar).
+7. Other  Features (For Higher Grades)
+	•	UDP-Based Weather Broadcast (Optional):
+	•	Simulate a UDP server broadcasting weather updates to multiple clients.
+	•	Proxy Server Support:
+	•	Allow the application to work behind a proxy (using java.net.Proxy).
+	•	Geolocation-Based Weather Fetching:
+	•	Use IP geolocation or GPS (if mobile) to fetch location-specific weather.
+
+
+
+
+
+
+
+
+
+
+
+
+Project Team Composition: Default: Team of 3 to 5 members. Solo projects allowed only for Topic 5, but must cover all core functionalities.
+Evaluation Criteria (70% Demo + 30% Report)
+Demo (70 points):
+	•	Functionality (40 pts):
+	•	Correct implementation of socket communication (TCP/UDP) (10 pts).
+	•	Proper handling of multithreading/NIO (10 pts).
+	•	Security features (SSL, password hashing) (10 pts).
+	•	HTTP protocol compliance (if applicable) (10 pts).
+	•	Code Structure (10 pts):
+	•	Clean, modular, and well-documented code.
+	•	User Experience (10 pts):
+	•	Smooth interaction (GUI or CLI).
+	•	Innovation (10 pts):
+	•	For incorporating Extra features (e.g., proxy, IPv6, NIO etc).
+Report (30 points):
+	•	System Design (10 pts):
+	•	Architecture diagram, protocol choices.
+	•	Implementation Details (15 pts):
+	•	Explanation of key components (sockets, threads, security).
+	•	Challenges & Future Work (5 pts):
+	•	Lessons learned, possible improvements.
+Submission Deadline & Format: Demo Week 16 and 17 (in-class presentation). Report: Week 17 (Word Document, 6-8 pages, SZU format) along with code on the Blackboard on or before 02nd July 2026
+
+关于大作业的所有文档应按要求由组长统一提交，小组其他成员无需重复提交。
+关键说明：
+提交责任：仅组长负责最终提交，确保文件完整性和一致性。
+文件范围：包括但不限于报告、代码、演示材料等要求的全部文档。
+协作建议：组员需提前将材料汇总至组长，避免遗漏。
+截止时间：以组长提交时间为准，逾期视为全组未完成。
+注意事项：
+若组长未提交，则视为全组未完成作业。
+提交前请确认文件命名规范（如：组长姓名_大作业名称.zip）。
+此规定旨在简化流程，请全体组员配合组长工作。
+

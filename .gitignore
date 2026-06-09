@@ -1,0 +1,19 @@
+# Compiled class files
+*.class
+
+# Log files
+ServerLog.txt
+
+# Database and Keystore files
+users_db.properties
+server_keystore.jks
+
+# Uploaded files directory
+uploads/
+
+# macOS system files
+.DS_Store
+
+# Word Documents (Requirements)
+*.doc
+*.docx
