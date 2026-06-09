@@ -19,7 +19,7 @@ public class NioChatServer implements Runnable {
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
     
-    // Maps SocketChannel to Username
+    // 维护客户端底层连接 (SocketChannel) 到其对应用户名 (Username) 的全局映射字典
     private final Map<SocketChannel, String> clients = new HashMap<>();
     private final Set<String> bannedUsers = new HashSet<>();
 
@@ -106,7 +106,8 @@ public class NioChatServer implements Runnable {
 
         String sender = clients.getOrDefault(clientChannel, "Unknown");
 
-        if (msg.startsWith("/kick ")) { // Basic Admin command handled here
+        // 处理基础管理员指令：/kick <用户名>，用于强制踢出某个在线用户
+        if (msg.startsWith("/kick ")) {
             if (!sender.equalsIgnoreCase("admin")) {
                 sendMsg(clientChannel, "SYS: Only admin can use this command.");
                 return;
@@ -116,20 +117,22 @@ public class NioChatServer implements Runnable {
             return;
         }
 
-        if (msg.startsWith("/ban ")) { // Ban Admin command
+        // 处理最高级管理员指令：/ban <用户名>，永久封禁并立刻踢出该用户
+        if (msg.startsWith("/ban ")) {
             if (!sender.equalsIgnoreCase("admin")) {
                 sendMsg(clientChannel, "SYS: Only admin can use this command.");
                 return;
             }
             String target = msg.substring(5).trim();
             bannedUsers.add(target);
-            kickUser(target); // Kick them out immediately
+            kickUser(target); // 调用底层踢人逻辑，立刻强制切断该用户的 Socket 连接
             broadcast("SYS: " + target + " has been permanently BANNED by admin.", null);
             return;
         }
 
         if (msg.startsWith("/msg ")) {
-            // Private message format: /msg targetUser Hello!
+            // 处理私聊消息逻辑。
+            // 解析标准私聊格式：/msg 目标用户名 聊天内容，例如：/msg Alice 你好呀！
             String[] parts = msg.split(" ", 3);
             if (parts.length == 3) {
                 String target = parts[1];
@@ -139,7 +142,7 @@ public class NioChatServer implements Runnable {
             return;
         }
 
-        // Default: broadcast
+        // 如果不是任何特殊指令，默认行为：将该普通消息广播给聊天室内所有的在线用户
         broadcast(sender + ": " + msg, null);
     }
 

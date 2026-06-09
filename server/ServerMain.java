@@ -21,26 +21,26 @@ public class ServerMain {
     public static void main(String[] args) {
         System.out.println("Starting Server Components...");
         
-        // Initialize Database
+        // 初始化数据库连接对象，供各组件共享使用
         Database db = new Database();
         
-        // Start Authentication Server (SSL/TLS)
+        // 2. 初始化并启动基于 SSL/TLS 的安全认证服务器，专职处理高密级的注册登录
         AuthServer authServer = new AuthServer(AUTH_PORT, db);
         new Thread(authServer).start();
 
-        // Start Chat Server (NIO)
+        // 1. 初始化并启动基于 NIO 的核心聊天服务器，放入独立线程运行，防止阻塞主线程
         NioChatServer chatServer = new NioChatServer(CHAT_PORT);
         new Thread(chatServer).start();
 
-        // Start UDP Broadcaster
+        // 3. 启动 UDP 广播服务，每隔一段时间向局域网大喊自己的存在，方便客户端自动连入
         UdpBroadcaster udpBroadcaster = new UdpBroadcaster(UDP_PORT, CHAT_PORT);
         new Thread(udpBroadcaster).start();
 
-        // Start HTTP File Server
+        // 4. 启动轻量级 HTTP 文件服务器，用于接收客户端的文件上传和下载请求
         HttpFileServer httpFileServer = new HttpFileServer(HTTP_PORT);
         httpFileServer.start();
 
-        // Start Web Admin Server
+        // 5. 启动可视化的 Web 端管理员控制台，监听 28081 端口
         WebAdminServer webAdminServer = new WebAdminServer(WEB_ADMIN_PORT, chatServer);
         webAdminServer.start();
 

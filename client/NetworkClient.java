@@ -31,7 +31,7 @@ public class NetworkClient {
     private ChatGUI gui;
 
     public NetworkClient() {
-        // Listen for UDP discovery in background
+        // 在后台启动一个独立线程，专门用于监听 UDP 广播以自动发现服务端 IP
         new Thread(this::listenForUdpDiscovery).start();
     }
 
@@ -70,7 +70,7 @@ public class NetworkClient {
         }
     }
 
-    // Listens for UDP broadcasts to automatically find the server IP
+    // 监听 UDP 广播以自动发现服务端 IP。如果检测到，将自动把 serverIp 替换为发现的 IP
     private void listenForUdpDiscovery() {
         try (DatagramSocket socket = new DatagramSocket(28888)) {
             byte[] buf = new byte[256];
@@ -93,7 +93,7 @@ public class NetworkClient {
         }
     }
 
-    // Bypass SSL validation for self-signed certificates
+    // 绕过 SSL 证书校验（因为我们使用的是自签名的临时证书，直接信任所有证书）
     private SSLSocketFactory getTrustAllSocketFactory() throws Exception {
         TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
@@ -159,10 +159,10 @@ public class NetworkClient {
             chatIn = new BufferedReader(new InputStreamReader(chatSocket.getInputStream()));
             chatOut = new PrintWriter(chatSocket.getOutputStream(), true);
             
-            // Join message
+            // 向服务端发送 JOIN 协议消息，宣告当前用户名加入聊天室
             chatOut.println("JOIN " + username);
             
-            // Start listening thread
+            // 启动一个专门的线程持续监听服务端发来的聊天消息
             new Thread(this::listenForMessages).start();
         } catch (IOException e) {
             gui.appendSystemMessage("Failed to connect to chat server.");
