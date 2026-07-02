@@ -26,7 +26,6 @@ public class ClientMain {
         SwingUtilities.invokeLater(() -> {
             NetworkClient networkClient = new NetworkClient();
             ChatGUI gui = new ChatGUI(networkClient);
-            networkClient.setGui(gui);
         });
     }
 }

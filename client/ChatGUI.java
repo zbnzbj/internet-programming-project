@@ -33,6 +33,9 @@ public class ChatGUI {
 
     public ChatGUI(NetworkClient client) {
         this.client = client;
+        // [EN] Bind GUI reference immediately to prevent NPE race condition in message listener thread
+        // [ZH] 立即绑定 GUI 引用，防止消息监听线程因 gui 为 null 而崩溃的竞态条件
+        client.setGui(this);
         showLoginDialog();
     }
 
@@ -194,6 +197,9 @@ public class ChatGUI {
     // [ZH] 安全地将标准聊天消息追加到文本展示区
     public void appendMessage(String msg) {
         SwingUtilities.invokeLater(() -> {
+            // [EN] Guard: UI components may not be initialized before login completes
+            // [ZH] 防御：在登录完成前，UI 组件可能尚未初始化
+            if (chatArea == null) return;
             chatArea.append(msg + "\n");
             chatArea.setCaretPosition(chatArea.getDocument().getLength());
         });
@@ -209,6 +215,9 @@ public class ChatGUI {
     // [ZH] 刷新右侧当前的在线用户列表
     public void updateOnlineUsers(String[] users) {
         SwingUtilities.invokeLater(() -> {
+            // [EN] Guard: UI components may not be initialized before login completes
+            // [ZH] 防御：在登录完成前，UI 组件可能尚未初始化
+            if (userListModel == null) return;
             userListModel.clear();
             for (String u : users) {
                 if (!u.isEmpty()) userListModel.addElement(u);

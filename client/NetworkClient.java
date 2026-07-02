@@ -187,7 +187,7 @@ public class NetworkClient {
             // [ZH] 启动一个专门的线程持续监听服务端发来的聊天消息
             new Thread(this::listenForMessages).start();
         } catch (IOException e) {
-            gui.appendSystemMessage("Failed to connect to chat server.");
+            if (gui != null) gui.appendSystemMessage("Failed to connect to chat server.");
         }
     }
 
@@ -200,14 +200,14 @@ public class NetworkClient {
                 if (msg.startsWith("ONLINE_USERS ")) {
                     // [EN] Update GUI user list / [ZH] 更新界面的用户列表
                     String[] users = msg.substring(13).split(",");
-                    gui.updateOnlineUsers(users);
+                    if (gui != null) gui.updateOnlineUsers(users);
                 } else {
                     // [EN] Update GUI chat area / [ZH] 更新界面的聊天记录
-                    gui.appendMessage(msg);
+                    if (gui != null) gui.appendMessage(msg);
                 }
             }
         } catch (IOException e) {
-            gui.appendSystemMessage("Disconnected from server.");
+            if (gui != null) gui.appendSystemMessage("Disconnected from server.");
         }
     }
 

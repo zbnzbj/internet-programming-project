@@ -68,7 +68,9 @@ public class NioChatServer implements Runnable {
                     if (key.isAcceptable()) {
                         handleAccept(key);
                     }
-                    if (key.isReadable()) {
+                    // [EN] Check isValid() to prevent CancelledKeyException on kicked/disconnected clients
+                    // [ZH] 检查 key 是否仍有效，防止对已被踢出/断开的客户端操作时抛出 CancelledKeyException
+                    if (key.isValid() && key.isReadable()) {
                         handleRead(key);
                     }
                     iter.remove();
@@ -196,11 +198,29 @@ public class NioChatServer implements Runnable {
     // [EN] Route a private message to a target user
     // [ZH] 路由分发一条私聊消息给目标用户
     private void sendPrivateMsg(String sender, String targetUser, String msg) throws IOException {
+        // [EN] Find the sender's channel for sending confirmation
+        // [ZH] 找到发送者的通道，用于发送确认副本
+        SocketChannel senderChannel = null;
+        for (Map.Entry<SocketChannel, String> entry : clients.entrySet()) {
+            if (entry.getValue().equals(sender)) {
+                senderChannel = entry.getKey();
+                break;
+            }
+        }
+
         for (Map.Entry<SocketChannel, String> entry : clients.entrySet()) {
             if (entry.getValue().equals(targetUser)) {
                 sendMsg(entry.getKey(), "[Private from " + sender + "]: " + msg);
+                // [EN] Send confirmation to sender / [ZH] 向发送者发送确认副本
+                if (senderChannel != null) {
+                    sendMsg(senderChannel, "[Private to " + targetUser + "]: " + msg);
+                }
                 return;
             }
+        }
+        // [EN] Target user not found / [ZH] 目标用户不在线
+        if (senderChannel != null) {
+            sendMsg(senderChannel, "SYS: User '" + targetUser + "' is not online.");
         }
     }
 

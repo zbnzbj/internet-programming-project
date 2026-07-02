@@ -90,7 +90,9 @@ public class Database {
         if (storedData == null) {
             return false; // [EN] User not found / [ZH] 用户不存在
         }
-        String[] parts = storedData.split(":");
+        // [EN] Split on first colon only to safely separate salt from hash
+        // [ZH] 仅按第一个冒号分割，安全地分离 salt 和 hash 值
+        String[] parts = storedData.split(":", 2);
         if (parts.length != 2) return false;
         String salt = parts[0];
         String storedHash = parts[1];
